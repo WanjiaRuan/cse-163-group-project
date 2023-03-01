@@ -34,7 +34,8 @@ def join_data(data: pd.DataFrame, WORLD_FILE: str) -> gpd.GeoDataFrame:
     world = gpd.read_file(WORLD_FILE)
     world = world[['NAME', 'SUBUNIT', 'geometry']]
     # Combine world and happiness datasets
-    world_data = data.merge(world, left_on='country', right_on='SUBUNIT', how='left')
+    world_data = data.merge(world, left_on='country',
+                            right_on='SUBUNIT', how='left')
     world_data = world_data.dropna()
     world_data_gpd = gpd.GeoDataFrame(world_data)
     return world_data_gpd
@@ -42,9 +43,11 @@ def join_data(data: pd.DataFrame, WORLD_FILE: str) -> gpd.GeoDataFrame:
 
 def map_plot(world_data: gpd.GeoDataFrame) -> None:
     yeardata = world_data.groupby('country')[['score', 'GDP(log)', 'social',
-                                             'life expectancy', 'freedom']].mean().copy()
+                                             'life expectancy',
+                                             'freedom']].mean().copy()
     filter_world = world_data[['SUBUNIT', 'geometry']]
-    yeardata = yeardata.merge(filter_world, left_on='country', right_on='SUBUNIT', how='left')
+    yeardata = yeardata.merge(filter_world, left_on='country',
+                              right_on='SUBUNIT', how='left')
     yeardata_gpd = gpd.GeoDataFrame(yeardata)
     yeardata_gpd.from_features(yeardata_gpd.set_index("SUBUNIT"), crs='WGS84')
     fig = px.choropleth_mapbox(yeardata_gpd, geojson=yeardata_gpd.geometry, 
@@ -53,9 +56,10 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
                                range_color=(2, 10),
                                center = {'lat': 47.65749, 'lon': -122.30385},
                                mapbox_style="carto-positron",
-                               zoom=3,
-                               opacity=0.8,
-                               labels={'score':'mean score'})
+                               zoom=3, 
+                               opacity=0.3,
+                               hover_name='SUBUNIT',
+                               labels={'score':'Average Score (2018-2021) '})
     fig.show()
 
 
