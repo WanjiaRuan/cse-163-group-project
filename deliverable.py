@@ -50,6 +50,7 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
                               right_on='SUBUNIT', how='left')
     yeardata_gpd = gpd.GeoDataFrame(yeardata)
     yeardata_gpd.from_features(yeardata_gpd.set_index("SUBUNIT"), crs='WGS84')
+
     fig = px.choropleth_mapbox(yeardata_gpd, geojson=yeardata_gpd.geometry, 
                                locations=yeardata_gpd.index, 
                                color='score',color_continuous_scale="Viridis",
@@ -59,7 +60,13 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
                                zoom=3, 
                                opacity=0.3,
                                hover_name='SUBUNIT',
-                               labels={'score':'Average Score (2018-2021) '})
+                               labels={'score':'Average Score'},
+                               title='Average Happiness Score (2018 - 2021)'
+                               )
+    
+    fig.update_layout(margin={'r':0,'t':0,'l':0,'b':0},
+                      coloraxis_colorbar={'title':'Average Score (2018-2021) '})
+
     fig.show()
 
 
