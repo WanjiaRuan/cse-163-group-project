@@ -77,11 +77,12 @@ def main():
     print('complete clean')
 
     # geodataframe
-    WORLD_FILE = 'https://drive.google.com/file/d/1mGQaL7-HpLCZxPYRRYTniM2ZjYN80Sgl/view?usp=share_link'
-    orld = gpd.read_file(WORLD_FILE)[['NAME', 'SUBUNIT', 'SUBREGION',
+    WORLD_FILE = ('https://github.com/WanjiaRuan/cse-163-group-project/'
+                  'blob/fd4af03bcaa683b7849afd75b7b6ee9acbfc0de9/data/world.zip?raw=true')
+    world = gpd.read_file(WORLD_FILE)[['NAME', 'SUBUNIT', 'SUBREGION',
                                        'CONTINENT', 'POP_EST', 'geometry']]
     # join / merge dataset with geodataframe
-    world_data = join_data(data, WORLD_FILE)
+    world_data = join_data(data, world)
     print('complete join')
 
     #map
