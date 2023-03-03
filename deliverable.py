@@ -10,7 +10,6 @@ import statsmodels.formula.api as smf
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
-import json
 import plotly.express as px
 
 
@@ -30,9 +29,7 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     return data
 
 
-def join_data(data: pd.DataFrame, WORLD_FILE: str) -> gpd.GeoDataFrame:
-    world = gpd.read_file(WORLD_FILE)
-    world = world[['NAME', 'SUBUNIT', 'geometry']]
+def join_data(data: pd.DataFrame, world: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     # Combine world and happiness datasets
     world_data = data.merge(world, left_on='country',
                             right_on='SUBUNIT', how='left')
@@ -57,11 +54,10 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
                                range_color=(2, 10),
                                center = {'lat': 47.65749, 'lon': -122.30385},
                                mapbox_style="carto-positron",
-                               zoom=3, 
-                               opacity=0.3,
+                               zoom=3, opacity=0.3,
                                hover_name='SUBUNIT',
                                labels={'score':'Average Score'},
-                               title='Average Happiness Score (2018 - 2021)'
+                               title='Average Happiness Score Map (2018 - 2021)'
                                )
     
     fig.update_layout(margin={'r':0,'t':0,'l':0,'b':0},
@@ -81,7 +77,10 @@ def main():
     print('complete clean')
 
     # geodataframe
-    WORLD_FILE = '/Users/rbc/Desktop/python/cse-163-group-project/data/world.shp'
+    WORLD_FILE = 'https://drive.google.com/file/d/1mGQaL7-HpLCZxPYRRYTniM2ZjYN80Sgl/view?usp=share_link'
+    orld = gpd.read_file(WORLD_FILE)[['NAME', 'SUBUNIT', 'SUBREGION',
+                                       'CONTINENT', 'POP_EST', 'geometry']]
+    # join / merge dataset with geodataframe
     world_data = join_data(data, WORLD_FILE)
     print('complete join')
 
