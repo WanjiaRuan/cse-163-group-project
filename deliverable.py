@@ -38,6 +38,42 @@ def join_data(data: pd.DataFrame, world: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
     world_data_gpd = gpd.GeoDataFrame(world_data)
     return world_data_gpd
 
+def score_distr(df: pd.DataFrame):
+    nice_color = sns.color_palette("BuPu_r", 4)
+    score_distr_graph = sns.displot(data=df, x="score", bins=19, height=6, aspect=1.4,
+                                    hue="year",palette=nice_color, kde=True)
+    score_distr_graph.set(xlabel = "Happiness Score",
+                           title = "Happiness Score Distribution Histogram")
+    
+    plt.show()
+
+def score_vs_gdp(df: pd.DataFrame):
+    score_vs_gdp_graph = sns.relplot(x='GDP(log)', y='score', hue="year",data=df)
+    score_vs_gdp_graph.set(xlabel = "Happiness Score", ylabel = "Log GDP per Capita",
+                           title = "Happiness Score vs Log GDP per Capita")
+    plt.show()
+
+def score_vs_social(df: pd.DataFrame):
+    score_vs_social_graph = sns.relplot(x='social', y='score', hue="year", data=df)
+    score_vs_social_graph.set(xlabel = "Happiness Score", ylabel = "Social Support",
+                              title = "Happiness Score vs Social Support")
+    plt.show()
+
+def score_vs_life_expectancy(df: pd.DataFrame):
+    score_vs_life_expectancy_graph = sns.relplot(x='life expectancy', y='score',
+                                                 hue="year", data=df)
+    score_vs_life_expectancy_graph.set(xlabel = "Happiness Score",
+                                       ylabel = "Life Expectancy",
+                                       title = "Happiness Score vs Life Expectancy")
+    plt.show()
+
+def score_vs_freedom(df: pd.DataFrame):
+    score_vs_freedom_graph = sns.relplot(x='freedom', y='score', hue="year", data=df)
+    score_vs_freedom_graph.set(xlabel = "Happiness Score", 
+                               ylabel = "Freedom to make Life Choices",
+                               title = "Happiness Score vs Freedom")
+    plt.show()
+
 
 def map_plot(world_data: gpd.GeoDataFrame) -> None:
     yeardata = world_data.groupby('country')[['score', 'GDP(log)', 'social',
@@ -110,6 +146,17 @@ def main():
                        'cse-163-group-project/main/data/data.csv')
     data = clean_data(df)
     print('complete clean')
+    
+    # Score distribution
+    score_distr(data)
+    # Score vs GDP Graph
+    score_vs_gdp(data)
+    # Score vs Social Graph
+    score_vs_social(data)
+    # Score vs Life Expectancy
+    score_vs_life_expectancy(data)
+    # Socre vs Freedom
+    score_vs_freedom(data)
 
     # geodataframe
     WORLD_FILE = ('https://github.com/WanjiaRuan/cse-163-group-project/'
@@ -130,7 +177,7 @@ def main():
     linear_model = linear_model_generate(world_data_ml)
     logistic_model = logistic_model_generate(world_data_ml)
     print(linear_model.summary())
-
+    
 
 
 if __name__ == '__main__':
