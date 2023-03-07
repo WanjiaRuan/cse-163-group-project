@@ -10,6 +10,7 @@ import statsmodels.formula.api as smf
 import seaborn as sns
 from sklearn.linear_model import LinearRegression
 from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix,precision_score, recall_score,accuracy_score
 import plotly.express as px
 
 
@@ -66,6 +67,40 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
     fig.show()
 
 
+def logistic_model_generate(data: pd.DataFrame):
+    print("Training Logistic Model:")
+    mean = data.score.mean()
+    m2 = LogisticRegression(max_iter=2000)
+    X = data[['CONTINENT', 'GDP_log', 'social', 'life_expectancy','freedom']]
+    X = pd.get_dummies(X, columns = ["CONTINENT"],drop_first = True)
+    y = data.score > mean
+    m2.fit(X, y)
+    print("Finished.")
+    yhat = m2.predict(X) > 0.5
+    confution_matrix  = confusion_matrix(y, yhat)
+    accuracy = accuracy_score(y, yhat)
+    precision = precision_score(y, yhat)
+    recall = recall_score(y, yhat)
+    f_score = 2/ ((1/precision) + (1/recall))
+    print(
+    "The confusion matrix is " , confution_matrix , " " ,
+    "The accuracy is " , accuracy , "." ,
+    "The precision is " , precision , "." ,
+    "The recall is " , recall , "." ,
+    "The F_score is " , f_score , "."
+)
+    return m2
+
+
+def linear_model_generate(data: pd.DataFrame):
+    print("Training linear Model:")
+    m = smf.ols(
+        "score ~ GDP_log + social + life_expectancy + freedom", data = data
+    ).fit()
+    return m
+
+
+
 # Main
 def main():
     print('Main Method')
@@ -88,6 +123,14 @@ def main():
     #map
     map_plot(world_data)
     print('complete plot')
+
+    #Machine Learning Model
+    print("ML Training")
+    world_data_ml = world_data.rename(columns={"life expectancy": "life_expectancy", "GDP(log)": "GDP_log"})
+    linear_model = linear_model_generate(world_data_ml)
+    logistic_model = logistic_model_generate(world_data_ml)
+    print(linear_model.summary())
+
 
 
 if __name__ == '__main__':
