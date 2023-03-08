@@ -112,16 +112,19 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
 
 
 def logistic_model_marginal_effect(data: gpd.GeoDataFrame) -> smf.logit:
-    print('marginal effect')
+    print('Calculate marginal effect using logistic model')
     average = data['score'].mean()
     data['aboveaverage'] = np.where(data.score > average, 1, 0)
     m = smf.logit('aboveaverage ~ C(CONTINENT) + GDP_log +'
-                  'social + life_expectancy + freedom', data=data).fit()
+                  'social + life_expectancy + freedom', data=data).fit(
+                  method_kwargs={"warn_convergence": False})
+    print(m.get_margeff().summary())
+    print()
     return m
 
 
 def logistic_model_generate(data: gpd.GeoDataFrame) -> LogisticRegression:
-    print("Training Logistic Model:")
+    print("Training Logistic Model using Sklearn:")
     mean = data.score.mean()
     m2 = LogisticRegression(max_iter=2000)
     X = data[['CONTINENT', 'GDP_log', 'social', 'life_expectancy', 'freedom']]
@@ -129,30 +132,41 @@ def logistic_model_generate(data: gpd.GeoDataFrame) -> LogisticRegression:
     y = data.score > mean
     m2.fit(X, y)
     print("Finished.")
+    print()
     yhat = m2.predict(X) > 0.5
     confution_matrix = confusion_matrix(y, yhat)
     accuracy = accuracy_score(y, yhat)
     precision = precision_score(y, yhat)
     recall = recall_score(y, yhat)
     f_score = f1_score(y, yhat)
-    print("The confusion matrix is ", confution_matrix)
+    print("The confusion matrix is:")
+    print(confution_matrix)
+    print()
     print("The accuracy is", accuracy)
     print("The precision is", precision)
     print("The recall is", recall)
     print("The F_score is", f_score)
+    print()
     return m2
 
 
 def linear_model_generate(data: gpd.GeoDataFrame) -> LinearRegression:
     print("Training linear Model:")
+    print()
     labels = data['score']
     features = data[['GDP_log', 'social', 'life_expectancy', 'freedom']]
     features = pd.get_dummies(features)
     features_train, features_test, labels_train, labels_test = \
         train_test_split(features, labels, test_size=0.2)
     m = LinearRegression()
-    m.fit(features_train, labels_train)
+    m = m.fit(features_train, labels_train)
     test_prediction = m.predict(features_test)
+    intercept = np.round(m.intercept_, 5)
+    coef = np.round(m.coef_, 5)
+    print('Happiness score prediction Equation:')
+    print(intercept, '+', coef[0], 'x GDP_log',
+          '+', coef[1], 'x social', '+', coef[2], 'x life_expectancy',
+          '+', coef[3], 'x freedom')
     mse_test = mean_squared_error(labels_test, test_prediction)
     print('Mean squared error:', mse_test)
     return m
@@ -189,12 +203,9 @@ def main():
 
     # Machine Learning Model
     print("ML Training")
-    linear_model = linear_model_generate(world_data)
-    marginal_effect = logistic_model_marginal_effect(world_data)
-    print(marginal_effect.get_margeff().summary())
+    logistic_model_marginal_effect(world_data)
     logistic_model_generate(world_data)
-    print(linear_model.summary())
-
+    linear_model_generate(world_data)
 
 if __name__ == '__main__':
     main()
