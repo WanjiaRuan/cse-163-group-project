@@ -42,6 +42,15 @@ def join_data(data: pd.DataFrame,
     world_data_gpd = gpd.GeoDataFrame(world_data)
     return world_data_gpd
 
+def year_data(df: pd.DataFrame) -> dict[list]:
+    res = {}
+    for i in range(2018, 2022):
+        year = df[df['year'] == i]
+        for s in range(2, 8, 0.25):
+            c = year['score'].count()
+            res[i].append(c)
+    return res
+
 
 def score_distr(df: pd.DataFrame) -> None:
     nice_color = sns.color_palette("BuPu_r", 4)
@@ -81,25 +90,20 @@ def score_plot(df: pd.DataFrame) -> None:
 
 
 def map_plot(world_data: gpd.GeoDataFrame) -> None:
-    yeardata = world_data.groupby('country')[['score', 'GDP_log', 'social',
-                                              'life_expectancy',
-                                              'freedom']].mean().copy()
-    filter_world = world_data[['SUBUNIT', 'geometry']]
-    yeardata = yeardata.merge(filter_world, left_on='country',
-                              right_on='SUBUNIT', how='left')
-    yeardata_gpd = gpd.GeoDataFrame(yeardata)
-    yeardata_gpd.from_features(yeardata_gpd.set_index("SUBUNIT"), crs='WGS84')
+    world_data['avg'] = world_data.groupby('country')['score'].mean()
+    world_data = world_data[['SUBUNIT', 'avg', 'geometry']]
+    world_data.from_features(world_data.set_index("SUBUNIT"), crs='WGS84')
 
-    fig = px.choropleth_mapbox(yeardata_gpd, geojson=yeardata_gpd.geometry,
-                               locations=yeardata_gpd.index,
-                               color='score',
+    fig = px.choropleth_mapbox(world_data, geojson=world_data.geometry,
+                               locations=world_data.index,
+                               color='avg',
                                color_continuous_scale="Viridis",
                                range_color=(2, 10),
                                center={'lat': 47.65749, 'lon': -122.30385},
                                mapbox_style="carto-positron",
                                zoom=3, opacity=0.3,
                                hover_name='SUBUNIT',
-                               labels={'score': 'Average Score'},
+                               labels={'avg': 'Average Score'},
                                title='Average Happiness Score'
                                      ' Map (2018 - 2021)'
                                )
@@ -111,7 +115,22 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
     fig.show()
 
 
-def logistic_model_marginal_effect(data: gpd.GeoDataFrame) -> smf.logit:
+def split_data(data: gpd.GeoDataFrame) -> list:
+    print('Split Data')
+    split = []
+    # For Logistic Model
+    X = data[['CONTINENT', 'GDP_log', 'social', 'life_expectancy', 'freedom']]
+    features = pd.get_dummies(X, columns=["CONTINENT"], drop_first=True)
+    data['above'] = np.where(data.score > (data['score'].mean()), 1, 0)
+    lo_labels = data['above']
+    # For Linear Model
+    num_features = data[['GDP_log', 'social', 'life_expectancy', 'freedom']]
+    li_labels = data['score']
+    split = [(features, lo_labels), (num_features, li_labels)]
+    return split
+
+
+def marginal_effect(data: gpd.GeoDataFrame) -> None:
     print('Calculate marginal effect using logistic model')
     average = data['score'].mean()
     data['aboveaverage'] = np.where(data.score > average, 1, 0)
@@ -120,25 +139,26 @@ def logistic_model_marginal_effect(data: gpd.GeoDataFrame) -> smf.logit:
                   method_kwargs={"warn_convergence": False})
     print(m.get_margeff().summary())
     print()
-    return m
 
 
-def logistic_model_generate(data: gpd.GeoDataFrame) -> LogisticRegression:
+def logistic_model_generate(features_train, features_test,
+                            labels_train, labels_test) -> None:
+    # Training the model
     print("Training Logistic Model using Sklearn:")
-    mean = data.score.mean()
-    m2 = LogisticRegression(max_iter=2000)
-    X = data[['CONTINENT', 'GDP_log', 'social', 'life_expectancy', 'freedom']]
-    X = pd.get_dummies(X, columns=["CONTINENT"], drop_first=True)
-    y = data.score > mean
-    m2.fit(X, y)
-    print("Finished.")
+    m = LogisticRegression(max_iter=2000)
+    m.fit(features_train, labels_train)
+    print("Finished training the model")
     print()
-    yhat = m2.predict(X) > 0.5
-    confution_matrix = confusion_matrix(y, yhat)
-    accuracy = accuracy_score(y, yhat)
-    precision = precision_score(y, yhat)
-    recall = recall_score(y, yhat)
-    f_score = f1_score(y, yhat)
+    # Predict using the model
+    yhat = m.predict(features_test)
+    # Scores
+    confution_matrix = confusion_matrix(labels_test, yhat)
+    accuracy = accuracy_score(labels_test, yhat)
+    precision = precision_score(labels_test, yhat)
+    recall = recall_score(labels_test, yhat)
+    f_score = f1_score(labels_test, yhat)
+    mse = mean_squared_error(labels_test, yhat)
+    # Results
     print("The confusion matrix is:")
     print(confution_matrix)
     print()
@@ -146,30 +166,32 @@ def logistic_model_generate(data: gpd.GeoDataFrame) -> LogisticRegression:
     print("The precision is", precision)
     print("The recall is", recall)
     print("The F_score is", f_score)
+    print("The mse is", mse)
     print()
-    return m2
 
 
-def linear_model_generate(data: gpd.GeoDataFrame) -> LinearRegression:
-    print("Training linear Model:")
-    print()
-    labels = data['score']
-    features = data[['GDP_log', 'social', 'life_expectancy', 'freedom']]
-    features = pd.get_dummies(features)
-    features_train, features_test, labels_train, labels_test = \
-        train_test_split(features, labels, test_size=0.2)
+def linear_model_generate(features_train, features_test,
+                          labels_train, labels_test) -> LinearRegression:
+    # Training the model
+    print("Training linear Model using Sklean:")
     m = LinearRegression()
-    m = m.fit(features_train, labels_train)
-    test_prediction = m.predict(features_test)
+    m.fit(features_train, labels_train)
+    print("Finished training the model")
+    print()
+    # Result
     intercept = np.round(m.intercept_, 5)
     coef = np.round(m.coef_, 5)
     print('Happiness score prediction Equation:')
     print(intercept, '+', coef[0], 'x GDP_log',
           '+', coef[1], 'x social', '+', coef[2], 'x life_expectancy',
           '+', coef[3], 'x freedom')
-    mse_test = mean_squared_error(labels_test, test_prediction)
-    print('Mean squared error:', mse_test)
-    return m
+    # Predict using the model
+    yhat = m.predict(features_test)
+    # Scores
+    mse = mean_squared_error(labels_test, yhat)
+    # Results
+    print("The mse is", mse)
+    print()
 
 
 # Main
@@ -202,10 +224,18 @@ def main():
     print('complete plot')
 
     # Machine Learning Model
-    print("ML Training")
-    logistic_model_marginal_effect(world_data)
-    logistic_model_generate(world_data)
-    linear_model_generate(world_data)
+    print("Machine Learning")
+    linear_features, linear_labels = split_data(world_data)[1]
+    li_features_train, li_features_test, li_labels_train, li_labels_test = \
+        train_test_split(linear_features, linear_labels, test_size=0.25)
+    logistic_features, logistic_labels = split_data(world_data)[0]
+    lo_features_train, lo_features_test, lo_labels_train, lo_labels_test = \
+        train_test_split(logistic_features, logistic_labels, test_size = 0.25)
+    marginal_effect(world_data)
+    logistic_model_generate(lo_features_train, lo_features_test,
+                            lo_labels_train, lo_labels_test)
+    linear_model_generate(li_features_train, li_features_test,
+                          li_labels_train, li_labels_test)
 
 if __name__ == '__main__':
     main()
