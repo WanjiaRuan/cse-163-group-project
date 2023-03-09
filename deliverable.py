@@ -15,7 +15,8 @@ from sklearn.metrics import confusion_matrix, precision_score, \
                             recall_score, accuracy_score, f1_score, \
                             mean_squared_error
 import plotly.express as px
-
+import warnings
+from statsmodels.tools.sm_exceptions import ConvergenceWarning
 
 # Code
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -42,19 +43,23 @@ def join_data(data: pd.DataFrame,
     world_data_gpd = gpd.GeoDataFrame(world_data)
     return world_data_gpd
 
-def year_data(df: pd.DataFrame) -> dict[list]:
+
+def yeardata(data: pd.DataFrame) -> dict[list]:
     res = {}
-    for i in range(2018, 2022):
-        year = df[df['year'] == i]
-        for s in range(2, 8, 0.25):
-            c = year['score'].count()
-            res[i].append(c)
+    for y in range(2018, 2022):
+        store = {}
+        year = data[data['year'] == y]
+        c = pd.cut(year["score"], [2 + 0.25 * x for x in range(25)])
+        for i, v in c.value_counts().to_dict().items():
+            store[i.left] = v
+        x = sorted(store.items())
+        res[y] = [i[1] for i in x]
     return res
 
 
 def score_distr(df: pd.DataFrame) -> None:
     nice_color = sns.color_palette("BuPu_r", 4)
-    score_distr_graph = sns.displot(data=df, x="score", bins=19,
+    score_distr_graph = sns.displot(data=df, x="score", bins=24,
                                     height=6, aspect=1.4, hue="year",
                                     palette=nice_color, kde=True)
     score_distr_graph.set(xlabel="Happiness Score",
@@ -90,20 +95,25 @@ def score_plot(df: pd.DataFrame) -> None:
 
 
 def map_plot(world_data: gpd.GeoDataFrame) -> None:
-    world_data['avg'] = world_data.groupby('country')['score'].mean()
-    world_data = world_data[['SUBUNIT', 'avg', 'geometry']]
-    world_data.from_features(world_data.set_index("SUBUNIT"), crs='WGS84')
+    yeardata = world_data.groupby('country')[['score', 'GDP_log', 'social',
+                                              'life_expectancy',
+                                              'freedom']].mean().copy()
+    filter_world = world_data[['SUBUNIT', 'geometry']]
+    yeardata = yeardata.merge(filter_world, left_on='country',
+                              right_on='SUBUNIT', how='left')
+    yeardata_gpd = gpd.GeoDataFrame(yeardata)
+    yeardata_gpd.from_features(yeardata_gpd.set_index("SUBUNIT"), crs='WGS84')
 
-    fig = px.choropleth_mapbox(world_data, geojson=world_data.geometry,
-                               locations=world_data.index,
-                               color='avg',
+    fig = px.choropleth_mapbox(yeardata_gpd, geojson=yeardata_gpd.geometry,
+                               locations=yeardata_gpd.index,
+                               color='score',
                                color_continuous_scale="Viridis",
                                range_color=(2, 10),
                                center={'lat': 47.65749, 'lon': -122.30385},
                                mapbox_style="carto-positron",
                                zoom=3, opacity=0.3,
                                hover_name='SUBUNIT',
-                               labels={'avg': 'Average Score'},
+                               labels={'score': 'Average Score'},
                                title='Average Happiness Score'
                                      ' Map (2018 - 2021)'
                                )
@@ -136,7 +146,8 @@ def marginal_effect(data: gpd.GeoDataFrame) -> None:
     data['aboveaverage'] = np.where(data.score > average, 1, 0)
     m = smf.logit('aboveaverage ~ C(CONTINENT) + GDP_log +'
                   'social + life_expectancy + freedom', data=data).fit(
-                  method_kwargs={"warn_convergence": False})
+                  kwargs={"Warning": False}
+                  )
     print(m.get_margeff().summary())
     print()
 
@@ -220,8 +231,8 @@ def main():
     print('complete join')
 
     # Map
-    map_plot(world_data)
-    print('complete plot')
+    # map_plot(world_data)
+    # print('complete plot')
 
     # Machine Learning Model
     print("Machine Learning")
@@ -231,6 +242,7 @@ def main():
     logistic_features, logistic_labels = split_data(world_data)[0]
     lo_features_train, lo_features_test, lo_labels_train, lo_labels_test = \
         train_test_split(logistic_features, logistic_labels, test_size = 0.25)
+    warnings.simplefilter('ignore')
     marginal_effect(world_data)
     logistic_model_generate(lo_features_train, lo_features_test,
                             lo_labels_train, lo_labels_test)
