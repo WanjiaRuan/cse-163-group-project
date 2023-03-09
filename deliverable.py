@@ -15,8 +15,7 @@ from sklearn.metrics import confusion_matrix, precision_score, \
                             recall_score, accuracy_score, f1_score, \
                             mean_squared_error
 import plotly.express as px
-import warnings
-from statsmodels.tools.sm_exceptions import ConvergenceWarning
+
 
 # Code
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
@@ -126,7 +125,6 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
 
 
 def split_data(data: gpd.GeoDataFrame) -> list:
-    print('Split Data')
     split = []
     # For Logistic Model
     X = data[['CONTINENT', 'GDP_log', 'social', 'life_expectancy', 'freedom']]
@@ -231,18 +229,18 @@ def main():
     print('complete join')
 
     # Map
-    # map_plot(world_data)
-    # print('complete plot')
+    map_plot(world_data)
+    print('complete plot')
 
     # Machine Learning Model
     print("Machine Learning")
+    print('Split Data')
     linear_features, linear_labels = split_data(world_data)[1]
     li_features_train, li_features_test, li_labels_train, li_labels_test = \
         train_test_split(linear_features, linear_labels, test_size=0.25)
     logistic_features, logistic_labels = split_data(world_data)[0]
     lo_features_train, lo_features_test, lo_labels_train, lo_labels_test = \
         train_test_split(logistic_features, logistic_labels, test_size = 0.25)
-    warnings.simplefilter('ignore')
     marginal_effect(world_data)
     logistic_model_generate(lo_features_train, lo_features_test,
                             lo_labels_train, lo_labels_test)
