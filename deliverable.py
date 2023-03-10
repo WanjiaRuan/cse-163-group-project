@@ -44,14 +44,15 @@ def join_data(data: pd.DataFrame,
 
 
 def score_distr(df: pd.DataFrame) -> None:
-    nice_color = sns.color_palette("BuPu_r", 4)
-    score_distr_graph = sns.displot(data=df, x="score", bins=24,
-                                    height=6, aspect=1.4, hue="year",
-                                    palette=nice_color, kde=True)
-    score_distr_graph.set(xlabel="Happiness Score",
-                          title="Happiness Score Distribution Histogram")
-
-    plt.savefig('scoredistribution.png')
+    fig, axs = plt.subplots(2, 2, figsize=(10, 10))
+    axs = axs.ravel()
+    years = [2018, 2019, 2020, 2021]
+    for i, year in enumerate(years):
+        year_df = df[df['year'] == year]
+        plot = sns.histplot(data=year_df, x="score", color="purple", kde=True, ax=axs[i])
+        plot.set(xlabel=f"Happiness Score", title=f"Happiness Score {year}")
+    plt.subplots_adjust(left=0.1, bottom=0.1, right=0.9, top=0.9, wspace=0.3, hspace=0.3)
+    fig.savefig("score_distribution.png")
 
 
 def score_plot(df: pd.DataFrame) -> None:
