@@ -14,9 +14,11 @@ In order to view our code and work, please follow the steps below:
 
 2. Click on the green bottom “Code” in the GitHub main page and copy the HTTPS link provided.
 
-<img width="996" alt="github" src="https://user-images.githubusercontent.com/122387699/224197560-cf23a4d6-2595-4b8d-a4bf-2c30c49ddca2.png">
+<img width="800" alt="Screen Shot 2023-03-09 at 5 11 26 PM" src="https://user-images.githubusercontent.com/122387699/224197671-cca0695c-6eb1-41b6-9c5a-67edf9f7cf73.png">
+
 
 3. Open the terminal in your own laptop, use “git clone” and paste the HTTPS link, this allows you to clone all the files in your laptop.
+<img width="568" alt="Screen Shot 2023-03-09 at 5 12 30 PM" src="https://user-images.githubusercontent.com/122387699/224197766-87620f17-3cc3-4ed6-b709-c5602104911e.png">
 
 4. Open Visual Studio Code and open the “deliverable.py” , “testing.py” and “cse163_utils.py” files in the cloned folder
 
