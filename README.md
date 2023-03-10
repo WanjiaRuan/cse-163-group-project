@@ -13,7 +13,8 @@ In order to view our code and work, please follow the steps below:
 1. First, you need to open the GitHub website with the link provided before.
 
 2. Click on the green bottom “Code” in the GitHub main page and copy the HTTPS link provided.
-![This is an image]("Desktop/CSE163/github.png")
+
+<img width="996" alt="github" src="https://user-images.githubusercontent.com/122387699/224197560-cf23a4d6-2595-4b8d-a4bf-2c30c49ddca2.png">
 
 3. Open the terminal in your own laptop, use “git clone” and paste the HTTPS link, this allows you to clone all the files in your laptop.
 
