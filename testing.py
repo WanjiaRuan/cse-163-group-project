@@ -1,7 +1,7 @@
 # CSE 163 Project
 # Author: Xingyuan Zhao, Mariana Li Chen, Wanjia Ruan
 
-# import files 
+# import files
 import pandas as pd
 import geopandas as gpd
 from cse163_utils import assert_equals
@@ -29,7 +29,9 @@ def test_split_data(one_gpd: gpd.GeoDataFrame,
     assert_equals(one_gpd['above'], one_logistic_labels)
     assert_equals(4, len(one_linear_features.columns))
     assert_equals(one_gpd['score'], one_linear_labels)
-    one_li_features_train, one_li_features_test, one_li_labels_train, one_li_labels_test = \
+
+    one_li_features_train, one_li_features_test, \
+        one_li_labels_train, one_li_labels_test = \
         train_test_split(one_linear_features, one_linear_labels,
                          test_size=0.25)
     assert_equals(96, len(one_li_features_train))
@@ -44,7 +46,9 @@ def test_split_data(one_gpd: gpd.GeoDataFrame,
     assert_equals(two_gpd['above'], two_logistic_labels)
     assert_equals(4, len(two_linear_features.columns))
     assert_equals(two_gpd['score'], two_linear_labels)
-    two_li_features_train, two_li_features_test, two_li_labels_train, two_li_labels_test = \
+
+    two_li_features_train, two_li_features_test, \
+        two_li_labels_train, two_li_labels_test = \
         train_test_split(two_linear_features, two_linear_labels,
                          test_size=0.25)
     assert_equals(177, len(two_li_features_train))
@@ -53,7 +57,6 @@ def test_split_data(one_gpd: gpd.GeoDataFrame,
     assert_equals(59, len(two_li_labels_test))
 
 
-# Main method 
 def main():
     # datasets
     one = pd.read_csv('https://raw.githubusercontent.com/WanjiaRuan/'

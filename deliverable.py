@@ -43,19 +43,6 @@ def join_data(data: pd.DataFrame,
     return world_data_gpd
 
 
-def yeardata(data: pd.DataFrame) -> dict[list]:
-    res = {}
-    for y in range(2018, 2022):
-        store = {}
-        year = data[data['year'] == y]
-        c = pd.cut(year["score"], [2 + 0.25 * x for x in range(25)])
-        for i, v in c.value_counts().to_dict().items():
-            store[i.left] = v
-        x = sorted(store.items())
-        res[y] = [i[1] for i in x]
-    return res
-
-
 def score_distr(df: pd.DataFrame) -> None:
     nice_color = sns.color_palette("BuPu_r", 4)
     score_distr_graph = sns.displot(data=df, x="score", bins=24,
@@ -139,7 +126,6 @@ def split_data(data: gpd.GeoDataFrame) -> list:
 
 
 def marginal_effect(data: gpd.GeoDataFrame) -> None:
-    print('Calculate marginal effect using logistic model')
     average = data['score'].mean()
     data['aboveaverage'] = np.where(data.score > average, 1, 0)
     m = smf.logit('aboveaverage ~ C(CONTINENT) + GDP_log +'
@@ -153,40 +139,45 @@ def marginal_effect(data: gpd.GeoDataFrame) -> None:
 def logistic_model_generate(features_train, features_test,
                             labels_train, labels_test) -> None:
     # Training the model
-    print("Training Logistic Model using Sklearn:")
     m = LogisticRegression(max_iter=2000)
     m.fit(features_train, labels_train)
-    print("Finished training the model")
     print()
-    # Predict using the model
-    yhat = m.predict(features_test)
+
+    # Predict using training data
+    yhat_train = m.predict(features_train)
+
+    # Predict using testing data
+    yhat_test = m.predict(features_test)
+
     # Scores
-    confution_matrix = confusion_matrix(labels_test, yhat)
-    accuracy = accuracy_score(labels_test, yhat)
-    precision = precision_score(labels_test, yhat)
-    recall = recall_score(labels_test, yhat)
-    f_score = f1_score(labels_test, yhat)
-    mse = mean_squared_error(labels_test, yhat)
+    confution_matrix = confusion_matrix(labels_test, yhat_test)
+    test_acc = accuracy_score(labels_test, yhat_test)
+    train_acc = accuracy_score(labels_train, yhat_train)
+    precision = precision_score(labels_test, yhat_test)
+    recall = recall_score(labels_test, yhat_test)
+    f_score = f1_score(labels_test, yhat_test)
+    mse = mean_squared_error(labels_test, yhat_test)
+
     # Results
-    print("The confusion matrix is:")
+    print("The testing result confusion matrix:")
     print(confution_matrix)
     print()
-    print("The accuracy is", accuracy)
-    print("The precision is", precision)
-    print("The recall is", recall)
-    print("The F_score is", f_score)
-    print("The mse is", mse)
+    print("Testing Accuracy:", test_acc)
+    print('Training Accuracy:', train_acc)
+    print("The Testing Precision:", precision)
+    print("The TestingRecall:", recall)
+    print("The TestingF_score:", f_score)
+    print("The Testing MSE:", mse)
     print()
 
 
 def linear_model_generate(features_train, features_test,
-                          labels_train, labels_test) -> LinearRegression:
+                          labels_train, labels_test) -> None:
     # Training the model
-    print("Training linear Model using Sklean:")
     m = LinearRegression()
     m.fit(features_train, labels_train)
-    print("Finished training the model")
     print()
+
     # Result
     intercept = np.round(m.intercept_, 5)
     coef = np.round(m.coef_, 5)
@@ -194,31 +185,48 @@ def linear_model_generate(features_train, features_test,
     print(intercept, '+', coef[0], 'x GDP_log',
           '+', coef[1], 'x social', '+', coef[2], 'x life_expectancy',
           '+', coef[3], 'x freedom')
-    # Predict using the model
-    yhat = m.predict(features_test)
+    print()
+
+    # Predict using training data
+    yhat_train = m.predict(features_train)
+
+    # Predict using the testing data
+    yhat_test = m.predict(features_test)
+
     # Scores
-    mse = mean_squared_error(labels_test, yhat)
+    test_mse = mean_squared_error(labels_test, yhat_test)
+    train_mse = mean_squared_error(labels_train, yhat_train)
+
     # Results
-    print("The mse is", mse)
+    print('Training MSE:', train_mse)
+    print("Testing MSE:", test_mse)
     print()
 
 
 # Main
 def main():
-    print('Main Method')
+    print('--------------  Welcome to our CSE 163 Project: '
+          'World Happiness Report  --------------')
+    print()
 
     # Load data
+    print('Loading and cleaning happiness data...')
     df = pd.read_csv('https://raw.githubusercontent.com/WanjiaRuan/'
                      'cse-163-group-project/main/data/data.csv')
     data = clean_data(df)
-    print('complete clean')
+    print('Complete Cleaning!')
+    print()
 
     # Score distribution
+    print('----------------- Plotting Histograms -----------------')
     score_distr(data)
     # Score vs GDP Graph
+    print('--------------- Plotting Scatter Plots ---------------')
+    print()
     score_plot(data)
 
     # geodataframe
+    print('Joining World GeoDataFrame with existing DataFrame...')
     WORLD_FILE = ('https://github.com/WanjiaRuan/cse-163-group-project/'
                   'blob/fd4af03bcaa683b7849afd75b7b6ee9acbfc0de9/data/'
                   'world.zip?raw=true')
@@ -226,26 +234,41 @@ def main():
                                        'CONTINENT', 'POP_EST', 'geometry']]
     # join / merge dataset with geodataframe
     world_data = join_data(data, world)
-    print('complete join')
+    print('Complete joining!')
+    print()
 
     # Map
+    print('--------------- Showing an interactive world map ---------------')
     map_plot(world_data)
-    print('complete plot')
+    print('Complete Plotting!')
+    print()
 
     # Machine Learning Model
-    print("Machine Learning")
-    print('Split Data')
+    print("----------------------- Machine Learning -----------------------")
+    print('Splitting Data...')
+    print()
+
     linear_features, linear_labels = split_data(world_data)[1]
     li_features_train, li_features_test, li_labels_train, li_labels_test = \
         train_test_split(linear_features, linear_labels, test_size=0.25)
+
     logistic_features, logistic_labels = split_data(world_data)[0]
     lo_features_train, lo_features_test, lo_labels_train, lo_labels_test = \
-        train_test_split(logistic_features, logistic_labels, test_size = 0.25)
+        train_test_split(logistic_features, logistic_labels, test_size=0.25)
+
+    print('Calculating marginal effect using logistic model...')
+    print('---------------------- Results shows below ----------------------')
     marginal_effect(world_data)
+
+    print('------------------------ Logistic Model ------------------------')
     logistic_model_generate(lo_features_train, lo_features_test,
                             lo_labels_train, lo_labels_test)
+
+    print('------------------------ Linear Model ------------------------')
     linear_model_generate(li_features_train, li_features_test,
                           li_labels_train, li_labels_test)
+    print('Finish.')
+
 
 if __name__ == '__main__':
     main()
