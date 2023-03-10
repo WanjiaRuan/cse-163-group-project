@@ -10,21 +10,21 @@ All the datasets, codes and testing files can be found in GitHub link below:
 ## Instructions
 In order to view our code and work, please follow the steps below:
 
-1. First, you need to open the GitHub website with the link provided before.
+**1.** First, you need to open the GitHub website with the link provided before.
 
-2. Click on the green bottom “Code” in the GitHub main page and copy the HTTPS link provided.
+**2.** Click on the green bottom “Code” in the GitHub main page and copy the HTTPS link provided.
 
 <img width="800" alt="Screen Shot 2023-03-09 at 5 11 26 PM" src="https://user-images.githubusercontent.com/122387699/224197671-cca0695c-6eb1-41b6-9c5a-67edf9f7cf73.png">
 
 
-3. Open the terminal in your own laptop, use “git clone” and paste the HTTPS link, this allows you to clone all the files in your laptop.
+**3.** Open the terminal in your own laptop, use “git clone” and paste the HTTPS link, this allows you to clone all the files in your laptop.
 <img width="568" alt="Screen Shot 2023-03-09 at 5 12 30 PM" src="https://user-images.githubusercontent.com/122387699/224197766-87620f17-3cc3-4ed6-b709-c5602104911e.png">
 
-4. Open Visual Studio Code and open the “deliverable.py” , “testing.py” and “cse163_utils.py” files in the cloned folder
+**4.** Open Visual Studio Code and open the “deliverable.py” , “testing.py” and “cse163_utils.py” files in the cloned folder
 
-5. Depending on your VS Code you need to install the libraries that are used in the those file. 
+**5.** Depending on your VS Code you need to install the libraries that are used in the those file. 
 
-6. Run the code in “deliverable.py”
+**6.** Run the code in “deliverable.py”
 
-7. Run the code in “testing.py”
+**7.** Run the code in “testing.py”
 
