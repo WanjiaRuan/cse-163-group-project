@@ -23,11 +23,6 @@ In order to view our code and work, please follow the steps below:
 **4.** Open Visual Studio Code and open the *“deliverable.py”* , *“testing.py”* and *“cse163_utils.py”* files in the cloned folder
 
 **5.** Depending on your VS Code you need to install the **libraries** that are used in the those file. For example:
-- geopandas
-* seaborn
-+ numpy
-- pandas
-* matplotlib.pyplot
 
 **6.** Run the code in *“deliverable.py”*
 
