@@ -29,7 +29,7 @@ This project mainly focus on the analysis of the Happiness scores based on the s
 > **Note:** We use anaconda, please install the required libraries in anaconda by following the instructions in this webiste
 [library install link!](https://docs.anaconda.com/anaconda/user-guide/tasks/install-packages/)
 
-## Required Datas
+## Required Data
 There are four datasets used for this project:
 - data.csv: dataset used for performing all the analysis in this project
 - world.zip: dataset used for performing map analysis in this project
