@@ -5,7 +5,7 @@ Authors: Xingyuan Zhao, Wanjia Ruan, Mariana Li Chen
 
 Professor: Hunter Schafer
 
-Project Mentor: ??????
+Project Mentor: Vatsal Chandel
 
 Proposal: [Link is here!](https://docs.google.com/document/d/17ACVgOa6-J6rQ4Gugefp-NY5WgWe8fu2OjDaijpfGho/edit?usp=sharing).
 
