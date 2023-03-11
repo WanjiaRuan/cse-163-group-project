@@ -1,17 +1,45 @@
 # cse-163-group-project
-Author: Xingyuan Zhao, Wanjia Ruan, Mariana Li Chen
+CSE 163: Intermediate Data Programming
+
+Authors: Xingyuan Zhao, Wanjia Ruan, Mariana Li Chen
+
+Professor: Hunter Schafer
+
+Project Mentor: ??????
 
 Proposal: [Link is here!](https://docs.google.com/document/d/17ACVgOa6-J6rQ4Gugefp-NY5WgWe8fu2OjDaijpfGho/edit?usp=sharing).
 
+GitHub: [GitHub link!](https://github.com/WanjiaRuan/cse-163-group-project)
+
 This project mainly focus on the analysis of the Happiness scores based on the social indexes. This analysis is based on the “World Happiness Report“ Dataset and we focus our analysis between the years 2018 to 2021. Moreover, we also combined "world" (GeoDataFrame) with Happiness Dataset for further analysis and evaluation. 
 
-All the datasets, codes and testing files can be found in GitHub link below: 
-[GitHub link!](https://github.com/WanjiaRuan/cse-163-group-project)
+## Required Libraries
+- pandas
+- numpy
+- geopandas
+- matplotlib.pyplot
+- statsmodels.formula.api
+- seaborn
+- sklearn.linear_model
+- sklearn.model_selection
+- sklearn.linear_model
+- sklearn.metrics
+- plotly.express
+
+> **Note:** We use anaconda, please install the required libraries in anaconda by following the instructions in this webiste
+[library install link!](https://docs.anaconda.com/anaconda/user-guide/tasks/install-packages/)
+
+## Required Datas
+There are four datasets used for this project:
+- data.csv: dataset used for performing all the analysis in this project
+- world.zip: ???????
+- one.csv: dataset used for testing
+- two.csv: dataset used for testing
 
 ## Instructions
 In order to view our code and work, please follow the steps below:
 
-**1.** First, you need to open the GitHub website with the link provided before.
+**1.** First, you need to open the GitHub website with the link provided above.
 
 **2.** Click on the green bottom **“Code”** in the GitHub main page and copy the **HTTPS** link provided.
 
