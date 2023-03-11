@@ -32,7 +32,7 @@ This project mainly focus on the analysis of the Happiness scores based on the s
 ## Required Datas
 There are four datasets used for this project:
 - data.csv: dataset used for performing all the analysis in this project
-- world.zip: ???????
+- world.zip: dataset used for performing map analysis in this project
 - one.csv: dataset used for testing
 - two.csv: dataset used for testing
 
@@ -56,4 +56,6 @@ In order to view our code and work, please follow the steps below:
 **6.** Run the code in *“deliverable.py”*
 
 **7.** Run the code in *“testing.py”*
+
+>**Note:** two graphs will be saved and map will pop up in browser
 
