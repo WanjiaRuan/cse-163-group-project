@@ -7,7 +7,7 @@ Professor: Hunter Schafer
 
 Project Mentor: Vatsal Chandel
 
-Proposal: [Link is here!](https://docs.google.com/document/d/17ACVgOa6-J6rQ4Gugefp-NY5WgWe8fu2OjDaijpfGho/edit?usp=sharing).
+Proposal: [Proposal link!](https://docs.google.com/document/d/17ACVgOa6-J6rQ4Gugefp-NY5WgWe8fu2OjDaijpfGho/edit?usp=sharing).
 
 GitHub: [GitHub link!](https://github.com/WanjiaRuan/cse-163-group-project)
 
