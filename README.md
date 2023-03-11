@@ -55,5 +55,8 @@ In order to view our code and work, please follow the steps below:
 
 **6.** Run the code in *“deliverable.py”* and *"testing.py"*.
 
->**Note:** two graphs will be saved and map will pop up in browser
+>**Note:** 
+> - Two graphs will be saved and the map will pop up in the browser
+> - All results including tables and words will print out in the terminal
+> - Please ignore future warning and convergence warning
 
