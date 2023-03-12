@@ -36,10 +36,6 @@ There are four datasets used for this project:
 - one.csv: dataset used for testing
 - two.csv: dataset used for testing
 
-## Direct Download
-If you have downloaded the project directly, please open the file "deliverable.py" to view and run the code for this program. Once this step is completed, run the testing 
-
-
 ## Instructions
 # Gradescope
 **1.** Download the project directly from gradescope
