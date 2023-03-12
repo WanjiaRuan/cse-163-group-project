@@ -1,12 +1,15 @@
 """ 
 CSE 163 Project
 Author: Xingyuan Zhao, Mariana Li Chen, Wanjia Ruan
-implement function for the final group project, this is the file
-that contains all codes that produce expected output based on the
-World Happiness Report dataset and the research questions which tends
-to provide a deeper analysis for the Happiness Score and its indexes.
+
+This file contain implement function for the final group project,
+this is the file that contains all codes that produce expected output
+based on the World Happiness Report dataset and the research questions
+which tends to provide a deeper analysis for the Happiness Score and its 
+indexes.
 """
-# Import Libraries
+
+
 import pandas as pd
 import numpy as np
 import geopandas as gpd
@@ -22,14 +25,13 @@ from sklearn.metrics import confusion_matrix, precision_score, \
 import plotly.express as px
 
 
-# Code
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     This function takes the parameter df and return a dataset
     with the selected 'Ladder Score' and four indexes from 2018 to  
     2019 with dropped NA values and renamed columns.
     """
-    # Filter and rename the datasets
+
     data = df[df['year'].isin(range(2018, 2022))]
     data = data[['Country name', 'year', 'Life Ladder', 'Log GDP per capita',
                  'Social support', 'Healthy life expectancy at birth',
@@ -66,6 +68,7 @@ def score_distr(df: pd.DataFrame) -> None:
     histograms that shows the happiness score distribution between
     the years 2018 to 2021 saved in the same png file.
     """
+
     fig, axs = plt.subplots(2, 2, figsize=(10, 10))
     axs = axs.ravel()
     years = [2018, 2019, 2020, 2021]
@@ -86,6 +89,7 @@ def score_plot(df: pd.DataFrame) -> None:
     and each of the social indexes between years 2018 to 2021 saved in
     the same png file.
     """
+
     fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(17, 17))
     score_vs_gdp_graph = sns.scatterplot(x='GDP_log', y='score',
                                          hue="year", data=df, ax=ax1)
@@ -117,6 +121,7 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
     an interactive map colored gradiently to indicate the distribution of
     the scores.
     """
+
     yeardata = world_data.groupby('country')[['score', 'GDP_log', 'social',
                                               'life_expectancy',
                                               'freedom']].mean().copy()
@@ -153,7 +158,7 @@ def split_data(data: gpd.GeoDataFrame) -> list:
     This function split the data into training set and test set, and create
     logisitic regression model for the future prediction.
     """
-    split = []
+
     # For Logistic Model
     X = data[['CONTINENT', 'GDP_log', 'social', 'life_expectancy', 'freedom']]
     features = pd.get_dummies(X, columns=["CONTINENT"], drop_first=True)
@@ -188,6 +193,7 @@ def logistic_model_generate(features_train, features_test,
     library abd train the model. Getting the confusion matrix and the
     accuracy, precision, recall, f-score, and MSE.
     """
+
     # Training the model
     m = LogisticRegression(max_iter=2000)
     m.fit(features_train, labels_train)
@@ -228,8 +234,8 @@ def linear_model_generate(features_train, features_test,
     This is the function using skklean create the linear regression
     model and using test set to get the MSE and the intercept, and
     the coeeficients for the variables.
-
     """
+
     # Training the model
     m = LinearRegression()
     m.fit(features_train, labels_train)

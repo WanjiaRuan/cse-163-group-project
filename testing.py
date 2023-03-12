@@ -1,11 +1,12 @@
 """
 CSE 163 Project
 Author: Xingyuan Zhao, Mariana Li Chen, Wanjia Ruan
-Implement function for testing codes in "deliverable.py"
+
+Implement functions for testing codes in 'deliverable.py'
 There are three assert_equal testing functions which
 testing different aspects of the main code.
 """
-# import files
+
 import pandas as pd
 import geopandas as gpd
 from cse163_utils import assert_equals
@@ -14,14 +15,20 @@ from sklearn.model_selection import train_test_split
 
 
 def test_clean_data(one: pd.DataFrame, two: pd.DataFrame) -> None:
-    """This function test the shape of then clean_data function"""
+    """
+    This function test the shape of then clean_data function
+    """
+
     assert_equals((137, 7), one.shape)
     assert_equals((249, 7), two.shape)
 
 
 def test_join_data(one_gpd: gpd.GeoDataFrame,
                    two_gpd: gpd.GeoDataFrame) -> None:
-    """ This function test the shape of the join_data function"""
+    """
+    This function test the shape of the join_data function
+    """
+
     assert_equals((129, 13), one_gpd.shape)
     assert_equals((236, 13), two_gpd.shape)
 
@@ -35,6 +42,7 @@ def test_split_data(one_gpd: gpd.GeoDataFrame,
     2. Check the features and labels variable and their numbers to see
     if it splits correctly
     """
+
     # For GeoDataFrame One
     one_logistic_features, one_logistic_labels = d.split_data(one_gpd)[0]
     one_linear_features, one_linear_labels = d.split_data(one_gpd)[1]
