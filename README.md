@@ -37,7 +37,7 @@ There are four datasets used for this project:
 - two.csv: dataset used for testing
 
 ## Instructions
-# Gradescope
+### Gradescope
 **1.** Download the project directly from gradescope
 
 **2.** Open VS Code and open the files "deliverable.py", "testing.py" and "cse163_utils.py"
@@ -51,7 +51,7 @@ There are four datasets used for this project:
 > - All results including tables and words will print out in the terminal
 > - Please ignore future warning and convergence warning
 
-# GitHub
+### GitHub
 If you are accessing this project from GitHub links, please follow the steps below to run the program in your computer:
 
 **1.** First, you need to open the GitHub website with the link provided above.
