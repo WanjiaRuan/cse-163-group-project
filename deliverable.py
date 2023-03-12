@@ -1,11 +1,11 @@
-""" 
+"""
 CSE 163 Project
 Author: Xingyuan Zhao, Mariana Li Chen, Wanjia Ruan
 
 This file contain implement function for the final group project,
 this is the file that contains all codes that produce expected output
 based on the World Happiness Report dataset and the research questions
-which tends to provide a deeper analysis for the Happiness Score and its 
+which tends to provide a deeper analysis for the Happiness Score and its
 indexes.
 """
 
@@ -28,7 +28,7 @@ import plotly.express as px
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
     """
     This function takes the parameter df and return a dataset
-    with the selected 'Ladder Score' and four indexes from 2018 to  
+    with the selected 'Ladder Score' and four indexes from 2018 to
     2019 with dropped NA values and renamed columns.
     """
 
@@ -139,7 +139,6 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
                                center={'lat': 47.65749, 'lon': -122.30385},
                                mapbox_style="carto-positron",
                                zoom=3, opacity=0.3,
-                             
                                hover_name='SUBUNIT',
                                labels={'score': 'Average Score'},
                                title='Average Happiness Score'
@@ -229,7 +228,6 @@ def logistic_model_generate(features_train, features_test,
 
 def linear_model_generate(features_train, features_test,
                           labels_train, labels_test) -> None:
-    
     """
     This is the function using skklean create the linear regression
     model and using test set to get the MSE and the intercept, and
