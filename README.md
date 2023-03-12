@@ -7,7 +7,7 @@ Professor: Hunter Schafer
 
 Project Mentor: Vatsal Chandel
 
-Proposal: [Proposal link!](https://docs.google.com/document/d/17ACVgOa6-J6rQ4Gugefp-NY5WgWe8fu2OjDaijpfGho/edit?usp=sharing).
+Report: [Report link!](https://docs.google.com/document/d/17ACVgOa6-J6rQ4Gugefp-NY5WgWe8fu2OjDaijpfGho/edit?usp=sharing).
 
 GitHub: [GitHub link!](https://github.com/WanjiaRuan/cse-163-group-project)
 
@@ -22,7 +22,6 @@ This project mainly focus on the analysis of the Happiness scores based on the s
 - seaborn
 - sklearn.linear_model
 - sklearn.model_selection
-- sklearn.linear_model
 - sklearn.metrics
 - plotly.express
 
@@ -30,14 +29,34 @@ This project mainly focus on the analysis of the Happiness scores based on the s
 [library install link!](https://docs.anaconda.com/anaconda/user-guide/tasks/install-packages/)
 
 ## Required Data
+We have written a program that ises URL links for all data paths that should be run without the need to download the file to your computer. If you are unable to do so, please download the data folder and replace all file names with the relative path on your computer. 
 There are four datasets used for this project:
 - data.csv: dataset used for performing all the analysis in this project
 - world.zip: dataset used for performing map analysis in this project
 - one.csv: dataset used for testing
 - two.csv: dataset used for testing
 
+## Direct Download
+If you have downloaded the project directly, please open the file "deliverable.py" to view and run the code for this program. Once this step is completed, run the testing 
+
+
 ## Instructions
-In order to view our code and work, please follow the steps below:
+# Gradescope
+**1.** Download the project directly from gradescope
+
+**2.** Open VS Code and open the files "deliverable.py", "testing.py" and "cse163_utils.py"
+
+**3.** View and run the code in "deliverable.py" to see the output
+
+**4.** View and run the code in  "testing.py" file for testing purposes 
+
+>**Note:** 
+> - Two graphs will be saved and the map will pop up in the browser
+> - All results including tables and words will print out in the terminal
+> - Please ignore future warning and convergence warning
+
+# GitHub
+If you are accessing this project from GitHub links, please follow the steps below to run the program in your computer:
 
 **1.** First, you need to open the GitHub website with the link provided above.
 
