@@ -1,5 +1,9 @@
 # CSE 163 Project
 # Author: Xingyuan Zhao, Mariana Li Chen, Wanjia Ruan
+# Implement function for the final group project, this is the file
+# that contains all codes that produce expected output based on the
+# World Happiness Report dataset and the research questions which tends
+# to provide a deeper analysis for the Happiness Score and its indexes.
 
 # Import Libraries
 import pandas as pd
@@ -19,6 +23,10 @@ import plotly.express as px
 
 # Code
 def clean_data(df: pd.DataFrame) -> pd.DataFrame:
+    # This function takes the parameter df and return a dataset
+    # with the selected 'Ladder Score' and four indexes from 2018 to  
+    # 2019 with dropped NA values and renamed columns.
+
     # Filter and rename the datasets
     data = df[df['year'].isin(range(2018, 2022))]
     data = data[['Country name', 'year', 'Life Ladder', 'Log GDP per capita',
@@ -35,6 +43,11 @@ def clean_data(df: pd.DataFrame) -> pd.DataFrame:
 
 def join_data(data: pd.DataFrame,
               world: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+    # This function takes two parameters, Dataset and GeoDataFrame,
+    # and join the two parameters to return a New GeoDataFrame for
+    # each country's Happiness Score from 2018 to 2021 wwith dropped NA
+    # values.
+
     # Combine world and happiness datasets
     world_data = data.merge(world, left_on='country',
                             right_on='SUBUNIT', how='left')
@@ -44,6 +57,9 @@ def join_data(data: pd.DataFrame,
 
 
 def score_distr(df: pd.DataFrame) -> None:
+    # This function takes one parameter df and return four different
+    # histograms that shows the happiness score distribution between
+    # the years 2018 to 2021 saved in the same png file.
     fig, axs = plt.subplots(2, 2, figsize=(10, 10))
     axs = axs.ravel()
     years = [2018, 2019, 2020, 2021]
@@ -58,6 +74,10 @@ def score_distr(df: pd.DataFrame) -> None:
 
 
 def score_plot(df: pd.DataFrame) -> None:
+    # This function takes one paramter df and return four different
+    # scatterplots that shows the correlation between happiness score
+    # and each of the social indexes between years 2018 to 2021 saved in
+    # the same png file.
     fig, [[ax1, ax2], [ax3, ax4]] = plt.subplots(2, 2, figsize=(17, 17))
     score_vs_gdp_graph = sns.scatterplot(x='GDP_log', y='score',
                                          hue="year", data=df, ax=ax1)
@@ -84,6 +104,9 @@ def score_plot(df: pd.DataFrame) -> None:
 
 
 def map_plot(world_data: gpd.GeoDataFrame) -> None:
+    # This function take one parameter world_data (GeoDataFrame) and return
+    # an interactive map colored gradiently to indicate the distribution of
+    # the scores.
     yeardata = world_data.groupby('country')[['score', 'GDP_log', 'social',
                                               'life_expectancy',
                                               'freedom']].mean().copy()
@@ -101,6 +124,7 @@ def map_plot(world_data: gpd.GeoDataFrame) -> None:
                                center={'lat': 47.65749, 'lon': -122.30385},
                                mapbox_style="carto-positron",
                                zoom=3, opacity=0.3,
+                             
                                hover_name='SUBUNIT',
                                labels={'score': 'Average Score'},
                                title='Average Happiness Score'
