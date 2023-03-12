@@ -37,7 +37,7 @@ There are four datasets used for this project:
 - two.csv: dataset used for testing
 
 ## Instructions
-### Gradescope
+### Direct Download
 **1.** Download the project directly from gradescope
 
 **2.** Open VS Code and open the files "deliverable.py", "testing.py" and "cse163_utils.py"
