@@ -211,7 +211,8 @@ def logistic_model_generate(features_train, features_test,
     precision = precision_score(labels_test, yhat_test)
     recall = recall_score(labels_test, yhat_test)
     f_score = f1_score(labels_test, yhat_test)
-    mse = mean_squared_error(labels_test, yhat_test)
+    test_mse = mean_squared_error(labels_test, yhat_test)
+    train_mse = mean_squared_error(labels_train, yhat_train)
 
     # Results
     print("The testing result confusion matrix:")
@@ -222,7 +223,8 @@ def logistic_model_generate(features_train, features_test,
     print("The Testing Precision:", precision)
     print("The TestingRecall:", recall)
     print("The TestingF_score:", f_score)
-    print("The Testing MSE:", mse)
+    print("The Testing MSE:", test_mse)
+    print("The Training MSE:", train_mse)
     print()
 
 
